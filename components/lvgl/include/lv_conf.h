@@ -20,8 +20,8 @@
  *====================*/
 
 /* Maximal horizontal and vertical resolution to support by the library.*/
-#define LV_HOR_RES_MAX          (480)
-#define LV_VER_RES_MAX          (320)
+#define LV_HOR_RES_MAX          (256)
+#define LV_VER_RES_MAX          (64)
 
 /* Color depth:
  * - 1:  1 byte per pixel
@@ -29,7 +29,7 @@
  * - 16: RGB565
  * - 32: ARGB8888
  */
-#define LV_COLOR_DEPTH     16
+#define LV_COLOR_DEPTH     1
 
 /* Swap the 2 bytes of RGB565 color.
  * Useful if the display has a 8 bit interface (e.g. SPI)*/
@@ -44,7 +44,7 @@
 #define LV_COLOR_TRANSP    LV_COLOR_LIME         /*LV_COLOR_LIME: pure green*/
 
 /* Enable anti-aliasing (lines, and radiuses will be smoothed) */
-#define LV_ANTIALIAS        1
+#define LV_ANTIALIAS        0
 
 /* Default display refresh period.
  * Can be changed in the display driver (`lv_disp_drv_t`).*/
@@ -188,7 +188,7 @@ typedef void * lv_group_user_data_t;
 #endif  /*LV_USE_GROUP*/
 
 /* 1: Enable GPU interface*/
-#define LV_USE_GPU              1   /*Only enables `gpu_fill_cb` and `gpu_blend_cb` in the disp. drv- */
+#define LV_USE_GPU              0   /*Only enables `gpu_fill_cb` and `gpu_blend_cb` in the disp. drv- */
 #define LV_USE_GPU_STM32_DMA2D  0
 /*If enabling LV_USE_GPU_STM32_DMA2D, LV_GPU_DMA2D_CMSIS_INCLUDE must be defined to include path of CMSIS header of target processor
 e.g. "stm32f769xx.h" or "stm32f429xx.h" */
@@ -221,7 +221,7 @@ typedef void * lv_fs_drv_user_data_t;
 #define LV_USE_PERF_MONITOR     0
 
 /*1: Use the functions and types from the older API if possible */
-#define LV_USE_API_EXTENSION_V6  1
+#define LV_USE_API_EXTENSION_V6  0
 #define LV_USE_API_EXTENSION_V7  1
 
 /*========================
@@ -297,10 +297,10 @@ typedef void * lv_img_decoder_user_data_t;
 
 /* 1: use a custom tick source.
  * It removes the need to manually update the tick with `lv_tick_inc`) */
-#define LV_TICK_CUSTOM     0
+#define LV_TICK_CUSTOM     1
 #if LV_TICK_CUSTOM == 1
-#define LV_TICK_CUSTOM_INCLUDE  "Arduino.h"         /*Header for the system time function*/
-#define LV_TICK_CUSTOM_SYS_TIME_EXPR (millis())     /*Expression evaluating to current system time in ms*/
+#define LV_TICK_CUSTOM_INCLUDE  "esp_timer.h"         /*Header for the system time function*/
+#define LV_TICK_CUSTOM_SYS_TIME_EXPR (esp_timer_get_time() / 1000)     /*Expression evaluating to current system time in ms*/
 #endif   /*LV_TICK_CUSTOM*/
 
 typedef void * lv_disp_drv_user_data_t;             /*Type of user data in the display driver*/
