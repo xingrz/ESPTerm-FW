@@ -22,5 +22,11 @@ void app_main(void) {
     ESP_LOGE(TAG, "Failed xTaskCreate(gui_proc_task): %d", ret);
   }
 
+  ret = xTaskCreate(uart_proc_task, "uart_proc_task", UART_PROC_STACK_SIZE,
+                    NULL, tskIDLE_PRIORITY + 1, NULL);
+  if (ret != pdPASS) {
+    ESP_LOGE(TAG, "Failed xTaskCreate(uart_proc_task): %d", ret);
+  }
+
   ESP_LOGI(TAG, "SYSTEM READY");
 }
