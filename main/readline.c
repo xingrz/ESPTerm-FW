@@ -4,8 +4,6 @@
 
 #include "readline.h"
 
-#define CH_NL 0x0d
-
 struct _readline_t {
   char *buffer;
   uint32_t buffer_size;
@@ -22,7 +20,7 @@ static inline void readline_buffer_init(readline_t *rl) {
 }
 
 static inline uint32_t readline_buffer_shift(readline_t *rl) {
-  char *first = strchr(rl->buffer, CH_NL);
+  char *first = strchr(rl->buffer, '\n');
   if (first != NULL) {
     char *second = first + 1;
     char *old = rl->buffer;
@@ -51,13 +49,13 @@ readline_t *readline_init(uint32_t max_lines, uint32_t max_chars) {
 char *readline_put(readline_t *rl, char *data, uint32_t len) {
   bool changed = false;
   for (uint32_t i = 0; i < len; i++) {
-    if (rl->chars <= rl->max_chars || data[i] == CH_NL) {
+    if ((rl->chars <= rl->max_chars && data[i] != '\r') || data[i] == '\n') {
       rl->buffer[rl->offset] = data[i];
       rl->offset++;
       rl->chars++;
       changed = true;
     }
-    if (data[i] == CH_NL) {
+    if (data[i] == '\n') {
       rl->lines++;
       rl->chars = 0;
       changed = true;
