@@ -18,8 +18,6 @@
 LV_FONT_DECLARE(source_code_pro_9);
 
 void uart_proc_task(void *arg) {
-  vTaskDelay(500 / portTICK_PERIOD_MS);
-
   lv_obj_t *label = lv_label_create(lv_scr_act(), NULL);
   lv_obj_set_pos(label, 0, 0);
   lv_obj_set_size(label, 256, 64);
