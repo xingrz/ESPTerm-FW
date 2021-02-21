@@ -12,6 +12,7 @@ struct _readline_t {
   uint32_t offset;
   uint32_t lines;
   uint32_t chars;
+  bool coloring;
 };
 
 static inline void readline_buffer_init(readline_t *rl) {
@@ -49,7 +50,13 @@ readline_t *readline_init(uint32_t max_lines, uint32_t max_chars) {
 char *readline_put(readline_t *rl, char *data, uint32_t len) {
   bool changed = false;
   for (uint32_t i = 0; i < len; i++) {
-    if ((rl->chars <= rl->max_chars && data[i] != '\r') || data[i] == '\n') {
+    if (data[i] == '\033') {
+      rl->coloring = true;
+    } else if (rl->coloring && data[i] == 'm') {
+      rl->coloring = false;
+    } else if ((!rl->coloring && rl->chars <= rl->max_chars &&
+                data[i] != '\r') ||
+               data[i] == '\n') {
       rl->buffer[rl->offset] = data[i];
       rl->offset++;
       rl->chars++;
