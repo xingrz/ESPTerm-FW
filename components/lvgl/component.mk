@@ -6,6 +6,7 @@ COMPONENT_SRCDIRS += lvgl/src/lv_misc
 COMPONENT_SRCDIRS += lvgl/src/lv_themes
 COMPONENT_SRCDIRS += lvgl/src/lv_draw
 COMPONENT_SRCDIRS += lvgl/src/lv_gpu
+COMPONENT_SRCDIRS += font
 
 CFLAGS += -DLV_CONF_INCLUDE_SIMPLE
 
