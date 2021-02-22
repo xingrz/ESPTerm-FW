@@ -15,12 +15,14 @@ struct _readline_t {
   bool coloring;
 };
 
-static inline void readline_buffer_init(readline_t *rl) {
+static void readline_buffer_init(readline_t *rl) {
   rl->buffer = (char *)malloc(rl->buffer_size);
   memset(rl->buffer, 0, rl->buffer_size);
 }
 
-static inline uint32_t readline_buffer_shift(readline_t *rl) {
+static bool readline_buffer_shift(readline_t *rl) {
+  uint32_t removed = 0;
+
   char *first = strchr(rl->buffer, '\n');
   if (first != NULL) {
     char *second = first + 1;
@@ -28,10 +30,40 @@ static inline uint32_t readline_buffer_shift(readline_t *rl) {
     readline_buffer_init(rl);
     memcpy(rl->buffer, second, strlen(second));
     free(old);
-    return second - old;
-  } else {
-    return 0;
+    removed = second - old;
   }
+
+  if (removed > 0) {
+    rl->offset -= removed;
+    rl->lines -= 1;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+static void readline_buffer_put(readline_t *rl, char c) {
+  rl->buffer[rl->offset] = c;
+  rl->offset++;
+  rl->chars++;
+}
+
+static void readline_buffer_del(readline_t *rl) {
+  if (rl->chars > 0) {
+    rl->offset--;
+    rl->chars--;
+    rl->buffer[rl->offset] = 0;
+  }
+}
+
+static void readline_buffer_reset(readline_t *rl) {
+  rl->offset -= rl->chars;
+  rl->chars = 0;
+}
+
+static void readline_buffer_new_line(readline_t *rl) {
+  rl->lines++;
+  rl->chars = 0;
 }
 
 readline_t *readline_init(uint32_t max_lines, uint32_t max_chars) {
@@ -50,30 +82,48 @@ readline_t *readline_init(uint32_t max_lines, uint32_t max_chars) {
 char *readline_put(readline_t *rl, char *data, uint32_t len) {
   bool changed = false;
   for (uint32_t i = 0; i < len; i++) {
-    if (data[i] == '\033') {
-      rl->coloring = true;
-    } else if (rl->coloring && data[i] == 'm') {
-      rl->coloring = false;
-    } else if ((!rl->coloring && rl->chars <= rl->max_chars &&
-                data[i] != '\r') ||
-               data[i] == '\n') {
-      rl->buffer[rl->offset] = data[i];
-      rl->offset++;
-      rl->chars++;
-      changed = true;
-    }
-    if (data[i] == '\n') {
-      rl->lines++;
-      rl->chars = 0;
-      changed = true;
+    char c = data[i];
+    switch (c) {
+      case '\033': {
+        rl->coloring = true;
+        break;
+      }
+      case 'm': {
+        if (rl->coloring) {
+          rl->coloring = false;
+        } else {
+          readline_buffer_put(rl, c);
+          changed = true;
+        }
+        break;
+      }
+      case '\r': {
+        readline_buffer_reset(rl);
+        changed = true;
+        break;
+      }
+      case '\n': {
+        if (rl->offset > 0 && rl->buffer[rl->offset - 1] != '\n') {
+          readline_buffer_put(rl, c);
+          readline_buffer_new_line(rl);
+          changed = true;
+        }
+        break;
+      }
+      case 0x08: { // back space
+        readline_buffer_del(rl);
+        changed = true;
+        break;
+      }
+      default: {
+        if (!rl->coloring && rl->chars <= rl->max_chars) {
+          readline_buffer_put(rl, c);
+          changed = true;
+        }
+      }
     }
     if (rl->lines >= rl->max_lines) {
-      uint32_t removed = readline_buffer_shift(rl);
-      if (removed > 0) {
-        rl->offset -= removed;
-        rl->lines -= 1;
-        changed = true;
-      }
+      changed = readline_buffer_shift(rl);
     }
   }
   if (changed) {
