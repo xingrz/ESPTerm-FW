@@ -11,6 +11,8 @@ typedef enum {
   FRAG_MAIN,
   FRAG_MENU,
   FRAG_ABOUT,
+  FRAG_UART,
+  FRAG_UART_BAUD,
   FRAG_MAX,
 } ui_fragment_id_t;
 
@@ -28,6 +30,9 @@ void ui_main_init(ui_fragment_t *frag);
 void ui_main_set_text(const char *text);
 
 void ui_menu_init(ui_fragment_t *frag);
+
+void ui_uart_init(ui_fragment_t *frag);
+void ui_uart_baud_init(ui_fragment_t *frag);
 
 void ui_about_init(ui_fragment_t *frag);
 

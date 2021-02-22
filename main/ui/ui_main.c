@@ -12,7 +12,7 @@ static lv_obj_t *ui_main_create(lv_obj_t *parent, lv_group_t *group) {
 
   lv_group_add_obj(group, term);
 
-  ui_main_set_text("hello world");
+  ui_main_set_text("");
 
   return term;
 }

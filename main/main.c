@@ -2,6 +2,8 @@
 
 #include "esp_log.h"
 #include "esp_system.h"
+#include "nvs.h"
+#include "nvs_flash.h"
 
 #include "tasks.h"
 
@@ -11,6 +13,13 @@
 #define TAG "main"
 
 void app_main(void) {
+  esp_err_t ret = nvs_flash_init();
+  if (ret == ESP_ERR_NVS_NO_FREE_PAGES) {
+    ESP_ERROR_CHECK(nvs_flash_erase());
+    ret = nvs_flash_init();
+  }
+  ESP_ERROR_CHECK(ret);
+
   lv_init();
   disp_init();
 
@@ -23,6 +32,8 @@ void app_main(void) {
 
   assert(pdPASS == xTaskCreate(ui_proc_task, "ui_proc_task", UI_PROC_STACK_SIZE,
                                NULL, tskIDLE_PRIORITY + 1, NULL));
+
+  vTaskDelay(500 / portTICK_PERIOD_MS);
 
   assert(pdPASS == xTaskCreate(uart_proc_task, "uart_proc_task",
                                UART_PROC_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1,

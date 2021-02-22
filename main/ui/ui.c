@@ -24,6 +24,8 @@ void ui_fragment_init(void) {
 
   ui_fragment_register(FRAG_MAIN, ui_main_init);
   ui_fragment_register(FRAG_MENU, ui_menu_init);
+  ui_fragment_register(FRAG_UART, ui_uart_init);
+  ui_fragment_register(FRAG_UART_BAUD, ui_uart_baud_init);
   ui_fragment_register(FRAG_ABOUT, ui_about_init);
 
   lv_obj_t *root = lv_cont_create(lv_scr_act(), NULL);

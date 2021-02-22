@@ -8,4 +8,6 @@
 #define PIN_OLED_DC GPIO_NUM_5
 #define PIN_OLED_RES GPIO_NUM_4
 
+#define UART_TERM UART_NUM_0
+
 #endif // _ESPTERM_PINOUT_
