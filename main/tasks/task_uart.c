@@ -9,23 +9,14 @@
 #include "lvgl.h"
 #include "readline.h"
 #include "tasks.h"
+#include "ui.h"
 
 #define TAG "task_uart"
 
 #define TERM_WIDTH (64 + 1)
 #define TERM_LINES (5)
 
-LV_FONT_DECLARE(source_code_pro_9);
-
 void uart_proc_task(void *arg) {
-  lv_obj_t *label = lv_label_create(lv_scr_act(), NULL);
-  lv_obj_set_pos(label, 0, 0);
-  lv_obj_set_size(label, 256, 64);
-  lv_obj_set_style_local_text_font(label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT,
-                                   &source_code_pro_9);
-  lv_label_set_text(label, "hello world");
-  lv_label_set_long_mode(label, LV_LABEL_LONG_CROP);
-
   uart_config_t uart_config = {
       .baud_rate = 115200,
       .data_bits = UART_DATA_8_BITS,
@@ -45,8 +36,7 @@ void uart_proc_task(void *arg) {
     uart_write_bytes(UART_NUM_0, (const char *)recv, len);
     char *lines = readline_put(rl, recv, len);
     if (lines != NULL) {
-      lv_obj_set_size(label, 256, 64);
-      lv_label_set_text(label, (const char *)lines);
+      ui_main_set_text((const char *)lines);
     }
   }
 

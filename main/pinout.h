@@ -3,6 +3,8 @@
 
 #include "driver/gpio.h"
 
+#define PIN_KEY_USER GPIO_NUM_0
+
 #define PIN_OLED_DC GPIO_NUM_5
 #define PIN_OLED_RES GPIO_NUM_4
 
