@@ -38,6 +38,17 @@ make ESPPORT=/dev/cu.usbserial-31120 app-flash
 
 烧录完毕后重新上电即可。
 
+### 使用 esptool.py 手动烧录
+
+```sh
+python $IDF_PATH/components/esptool_py/esptool/esptool.py \
+    --port /dev/cu.usbserial-31120 --baud 115200 \
+    write_flash --flash_mode dout \
+    0x0 build/bootloader/bootloader.bin \
+    0x8000 build/partitions_singleapp.bin \
+    0x10000 build/ESPTerm.bin
+```
+
 ## 开源许可
 
 ESPTerm 的软件部分采用 [GNU v3](LICENSE) 协议开源。
