@@ -22,6 +22,8 @@ make
 
 将 ESPTerm 上的 5V/RX/TX/GND 分别接到串口板的 5V/TXD/RXD/GND 上。按住 ESPTerm 上方的按钮上电。上电后即可松开按钮。
 
+### 从源码烧录
+
 首次烧录需要全量烧录：
 
 ```sh
@@ -36,18 +38,24 @@ make ESPPORT=/dev/cu.usbserial-31120 flash
 make ESPPORT=/dev/cu.usbserial-31120 app-flash
 ```
 
-烧录完毕后重新上电即可。
+### 烧录 CI 产物
 
-### 使用 esptool.py 手动烧录
+除了自己从源码构建外，你还可以从 [Actions](https://github.com/xingrz/ESPTerm-FW/actions) 下载由 CI 编译好的产物，并通过 esptool.py 烧录。
 
 ```sh
-python $IDF_PATH/components/esptool_py/esptool/esptool.py \
+# 安装烧录工具
+pip install esptool
+
+# 假设你的串口板位于 /dev/cu.usbserial-31120
+esptool.py \
     --port /dev/cu.usbserial-31120 --baud 115200 \
     write_flash --flash_mode dout \
-    0x0 build/bootloader/bootloader.bin \
-    0x8000 build/partitions_singleapp.bin \
-    0x10000 build/ESPTerm.bin
+    0x0 bootloader.bin \
+    0x8000 partition_table.bin \
+    0x10000 app.bin
 ```
+
+烧录完毕后重新上电即可。
 
 ## 开源许可
 
