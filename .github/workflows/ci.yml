@@ -1,0 +1,31 @@
+name: Auto build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Build project
+        run: |
+          docker pull xingrz/esp8266-rtos-builder:3.4
+          docker run --rm -v $PWD:/project xingrz/esp8266-rtos-builder:3.4
+          mkdir -p artifact
+          cp build/bootloader/bootloader.bin artifact/bootloader.bin
+          cp build/partitions_singleapp.bin artifact/partition_table.bin
+          cp build/ESPTerm.bin artifact/app.bin
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ESPTerm
+          path: artifact/*
