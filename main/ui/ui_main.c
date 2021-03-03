@@ -43,6 +43,7 @@ void ui_main_set_text(const char *text) {
   if (term != NULL) {
     lv_label_set_text(term, text);
     lv_obj_set_size(term, UI_WIDTH, UI_HEIGHT);
+    ui_report_activity();
   }
 }
 

@@ -25,6 +25,7 @@
 #include "input.h"
 #include "pinout.h"
 #include "tasks.h"
+#include "ui.h"
 
 #include "lvgl.h"
 
@@ -47,6 +48,7 @@ static void btn_on_long_pressed(void) {
 
 static void btn_on_down(void) {
   ESP_LOGV(TAG, "Down");
+  ui_report_activity();
 }
 
 static void btn_on_up(void) {

@@ -21,6 +21,7 @@
 
 #include "esp_log.h"
 #include "esp_system.h"
+#include "esp_timer.h"
 
 #include "lvgl.h"
 #include "tasks.h"
@@ -28,8 +29,33 @@
 
 #define TAG "task_ui"
 
+#define SLEEP_TIMEOUT_MS 15000
+
+static volatile int64_t last_active_ms = 0;
+static volatile bool active = false;
+
 void ui_proc_task(void *arg) {
   ui_fragment_init();
   ui_fragment_show(FRAG_MAIN);
+
+  while (1) {
+    if (active) {
+      int64_t now = esp_timer_get_time() / 1000;
+      if (now - last_active_ms >= SLEEP_TIMEOUT_MS) {
+        active = false;
+        ui_fragment_show(FRAG_NONE);
+      }
+    }
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+  }
+
   vTaskDelete(NULL);
+}
+
+void ui_report_activity(void) {
+  last_active_ms = esp_timer_get_time() / 1000;
+  if (!active) {
+    active = true;
+    ui_fragment_show(FRAG_MAIN);
+  }
 }

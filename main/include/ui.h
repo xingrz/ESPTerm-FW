@@ -39,6 +39,8 @@ typedef struct {
   void (*show)(void);
 } ui_fragment_t;
 
+void ui_report_activity(void);
+
 void ui_fragment_init(void);
 void ui_fragment_show(ui_fragment_id_t id);
 
