@@ -24,6 +24,7 @@ jobs:
           cp build/bootloader/bootloader.bin artifact/bootloader.bin
           cp build/partitions_singleapp.bin artifact/partition_table.bin
           cp build/ESPTerm.bin artifact/app.bin
+          cp flash_args artifact/flash_args
 
       - uses: actions/upload-artifact@v2
         with:

@@ -47,12 +47,7 @@ make ESPPORT=/dev/cu.usbserial-31120 app-flash
 pip install esptool
 
 # 假设你的串口板位于 /dev/cu.usbserial-31120
-esptool.py \
-    --port /dev/cu.usbserial-31120 --baud 115200 \
-    write_flash --flash_mode dout \
-    0x0 bootloader.bin \
-    0x8000 partition_table.bin \
-    0x10000 app.bin
+esptool.py --port /dev/cu.usbserial-31120 $(cat flash_args)
 ```
 
 烧录完毕后重新上电即可。

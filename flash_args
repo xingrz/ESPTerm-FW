@@ -1,0 +1,4 @@
+write_flash --flash_mode dout
+0x0 bootloader.bin
+0x8000 partition_table.bin
+0x10000 app.bin
