@@ -3,6 +3,7 @@ name: Auto build
 on:
   push:
     branches: [ master ]
+    tags: [ '*' ]
   pull_request:
     branches: [ master ]
 
@@ -36,3 +37,11 @@ jobs:
         with:
           name: ESPTerm-${{ steps.short-sha.outputs.sha }}
           path: upload/
+
+      - name: Release binaries
+        uses: fnkr/github-action-ghr@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GHR_COMPRESS: zip
+          GHR_PATH: upload/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

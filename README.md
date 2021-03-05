@@ -40,13 +40,14 @@ make ESPPORT=/dev/cu.usbserial-31120 app-flash
 
 ### 烧录 CI 产物
 
-除了自己从源码构建外，你还可以从 [Actions](https://github.com/xingrz/ESPTerm-FW/actions) 下载由 CI 编译好的产物，并通过 esptool.py 烧录。
+除了自己从源码构建外，你还可以从 [Releases](https://github.com/xingrz/ESPTerm-FW/releases) 下载由 CI 编译好的产物，并通过 esptool.py 烧录。
 
 ```sh
 # 安装烧录工具
 pip install esptool
 
 # 假设你的串口板位于 /dev/cu.usbserial-31120
+unzip ESPTerm-123456 && cd ESPTerm-123456
 esptool.py --port /dev/cu.usbserial-31120 $(cat flash_args)
 ```
 
