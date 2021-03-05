@@ -35,7 +35,7 @@
 #define TAG "task_uart"
 
 #define TERM_WIDTH (64 + 1)
-#define TERM_LINES (5)
+#define TERM_LINES (7)
 
 #define TERM_NVS_NAME "espterm.uart"
 #define TERM_NVS_KEY_BAUDRATE "baudrate"
