@@ -16,6 +16,9 @@ jobs:
           submodules: true
           fetch-depth: 0
 
+      - uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+
       - name: Build project
         run: |
           docker pull xingrz/esp8266-rtos-builder:3.4
@@ -25,8 +28,11 @@ jobs:
           cp build/partitions_singleapp.bin artifact/partition_table.bin
           cp build/ESPTerm.bin artifact/app.bin
           cp flash_args artifact/flash_args
+          mkdir -p upload
+          mv artifact upload/ESPTerm-${{ steps.short-sha.outputs.sha }}
 
-      - uses: actions/upload-artifact@v2
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
         with:
-          name: ESPTerm
-          path: artifact/*
+          name: ESPTerm-${{ steps.short-sha.outputs.sha }}
+          path: upload/
