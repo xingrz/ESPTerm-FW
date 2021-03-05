@@ -39,7 +39,7 @@ static void hspi_init(void) {
       .interface.val = SPI_DEFAULT_INTERFACE,
       .intr_enable.val = 0,
       .mode = SPI_MASTER_MODE,
-      .clk_div = SPI_40MHz_DIV,
+      .clk_div = SPI_20MHz_DIV,
       .event_cb = NULL,
   };
 
